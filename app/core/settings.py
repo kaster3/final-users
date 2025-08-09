@@ -1,8 +1,10 @@
+from pathlib import Path
 from typing import Literal
 
 from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+BASE_PATH = Path(__file__).parent.parent.parent
 
 class ApiV1Prefix(BaseModel):
     prefix: str = "/v1"
@@ -42,7 +44,10 @@ class GunicornConfig(BaseModel):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=(".template.env", ".env"),
+        env_file=(
+            BASE_PATH / ".template.env",
+            BASE_PATH / ".env",
+        ),
         case_sensitive=False,
         env_nested_delimiter="__",
         env_prefix="FASTAPI__",
