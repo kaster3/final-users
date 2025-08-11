@@ -54,6 +54,10 @@ class DataBase(BaseModel):
     pool_size: int
     max_overflow: int
 
+class Redis(BaseModel):
+    url: str
+    ttl: int
+
 
 class GunicornConfig(BaseModel):
     host: str
@@ -77,6 +81,7 @@ class Settings(BaseSettings):
     logging: LoggingConfig
     access_token: AccessToken
     jwt_token: JWTToken
+    redis: Redis
     api: ApiPrefix = ApiPrefix()
 
 
