@@ -3,12 +3,14 @@ from fastapi import APIRouter
 from app.core import settings
 
 from .some_endpoint import router as endpoint
+from .auth.auth import router as auth
+from .auth.users import router as users
 
 router = APIRouter(
     prefix=settings.api.v1.prefix,
 )
 
-for rout in (endpoint,):
+for rout in (endpoint, auth, users):
     router.include_router(
         router=rout,
     )

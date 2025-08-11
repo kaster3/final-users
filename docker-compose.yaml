@@ -12,13 +12,17 @@ services:
       depends_on:
         db:
           condition: service_healthy
+        cache:
+          condition: service_healthy
 
     db:
       image: postgres:16.2
       container_name: db
       restart: always
       env_file:
-        - template.env.docker
+        - .template.env.docker
+      ports:
+        - "5432:5432"
       volumes:
         - db:/var/lib/postgresql/data
       healthcheck:
@@ -27,6 +31,22 @@ services:
         timeout: 5s
         retries: 5
 
+    cache:
+      container_name: cache
+      image: redis:latest
+      restart: always
+      ports:
+        - "6379:6379"
+      healthcheck:
+        test: [ "CMD", "redis-cli", "ping" ]
+        interval: 5s
+        timeout: 3s
+        retries: 3
+      volumes:
+        - redis_data:/data
+
 volumes:
   db:
+    driver: local
+  redis_data:
     driver: local
