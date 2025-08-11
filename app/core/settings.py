@@ -7,13 +7,33 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 BASE_PATH = Path(__file__).parent.parent.parent
 
 class ApiV1Prefix(BaseModel):
-    prefix: str = "/v1"
     endpoint: str = "/endpoint"
+    prefix: str = "/v1"
+    auth: str = "/auth"
+    users: str = "/user"
 
 
 class ApiPrefix(BaseModel):
     prefix: str = "/api"
     v1: ApiV1Prefix = ApiV1Prefix()
+
+    @property
+    def bearer_token_url(self) -> str:
+        parts = (self.prefix, self.v1.prefix, self.v1.auth, "/login")
+        path = "".join(parts)
+        return path[1:]
+
+class AccessToken(BaseModel):
+    lifetime_seconds: int
+    reset_password_token_secret: str
+    verification_token_secret: str
+
+
+class JWTToken(BaseModel):
+    lifetime_seconds: int
+    algorithm: str = "RS256"
+    private_key: Path = BASE_PATH / "certs" / "jwt-private.pem"
+    public_key: Path = BASE_PATH / "certs" / "jwt-public.pem"
 
 
 class LoggingConfig(BaseModel):
@@ -55,6 +75,8 @@ class Settings(BaseSettings):
     gunicorn: GunicornConfig
     db: DataBase
     logging: LoggingConfig
+    access_token: AccessToken
+    jwt_token: JWTToken
     api: ApiPrefix = ApiPrefix()
 
 
