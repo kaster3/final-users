@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.api_v1.auth.dto import UserCreate
@@ -12,6 +13,11 @@ class SQLAlchemyUserRepository(IUserRepository):
     async def get_user_by_id(self, user_id: int) -> User | None:
         user = await self.session.get(User, user_id)
         return user
+
+    async def get_user_by_email(self, email: str) -> User | None:
+        stmt = select(User).where(User.email == email)
+        result = await self.session.scalar(stmt)
+        return result
 
     async def create_user(
             self,
