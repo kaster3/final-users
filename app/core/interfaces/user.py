@@ -11,6 +11,10 @@ class IUserRepository(Protocol):
         raise NotImplementedError
 
     @abstractmethod
+    async def get_user_by_email(self, email: str) -> User | None:
+        raise NotImplementedError
+
+    @abstractmethod
     async def create_user(
             self,
             user_data: UserCreate,
