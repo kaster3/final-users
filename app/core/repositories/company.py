@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.api_v1.company.dto import CompanyCreate
 from app.core.database.models import Company, User
 from app.core.interfaces.company import IDBCompanyRepository
 
@@ -9,8 +10,8 @@ class SQLAlchemyCompanyRepository(IDBCompanyRepository):
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def create_company(self, request,) -> Company:
-        company = Company(**request.model_dump())
+    async def create_company(self, company_data: CompanyCreate,) -> Company:
+        company = Company(**company_data.model_dump())
         self.session.add(company)
         await self.session.commit()
         await self.session.refresh(company)
