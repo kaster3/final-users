@@ -59,6 +59,10 @@ class Redis(BaseModel):
     ttl: int
 
 
+class AdminPanel(BaseModel):
+    SECRET_KEY: str
+
+
 class GunicornConfig(BaseModel):
     host: str
     port: int
@@ -82,6 +86,7 @@ class Settings(BaseSettings):
     access_token: AccessToken
     jwt_token: JWTToken
     redis: Redis
+    admin_panel: AdminPanel
     api: ApiPrefix = ApiPrefix()
 
 
