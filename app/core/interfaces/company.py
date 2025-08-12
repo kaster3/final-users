@@ -2,6 +2,7 @@ from abc import abstractmethod
 
 from typing import Protocol
 
+from app.api.api_v1.company.dto import CompanyCreate
 from app.core.database.models import Company, User
 
 
@@ -9,7 +10,7 @@ class IDBCompanyRepository(Protocol):
     @abstractmethod
     async def create_company(
             self,
-            request,
+            company_data: CompanyCreate,
     ) -> Company:
         raise NotImplementedError
 
