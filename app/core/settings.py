@@ -89,6 +89,7 @@ class Settings(BaseSettings):
     redis: Redis
     admin_panel: AdminPanel
     api: ApiPrefix = ApiPrefix()
+    api_key: str = "qwerty"
 
 
 settings = Settings()

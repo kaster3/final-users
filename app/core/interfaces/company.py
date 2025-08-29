@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 from typing import Protocol
 
-from app.api.api_v1.company.dto import CompanyCreate
+from app.api.api_v1.company.dto import CompanyCreate, CompanyUpdate
 from app.core.database.models import Company, User
 
 
@@ -23,6 +23,10 @@ class IDBCompanyRepository(Protocol):
         raise NotImplementedError
 
     @abstractmethod
+    async def update(self, company: Company, user_data: CompanyUpdate) -> Company:
+        raise NotImplementedError
+
+    @abstractmethod
     async def add_user(self, company: Company, user: User) -> None:
         """Добавить пользователя в компанию"""
         raise NotImplementedError
@@ -30,9 +34,4 @@ class IDBCompanyRepository(Protocol):
     @abstractmethod
     async def remove_user(self, company: Company, user: User) -> None:
         """Удалить пользователя из компании"""
-        raise NotImplementedError
-
-    @abstractmethod
-    async def update_user_role(self, user: User, new_role: str) -> None:
-        """Изменить роль пользователя в компании"""
         raise NotImplementedError

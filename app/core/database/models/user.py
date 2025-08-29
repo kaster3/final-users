@@ -11,6 +11,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database.models.base import Base
 from app.core.database.models.mixins import IntIdPkMixin
+from .enums.user_role import UserRole
 
 if TYPE_CHECKING:
     from .company import Company
@@ -22,9 +23,9 @@ class User(Base, IntIdPkMixin, SQLAlchemyBaseUserTable[int]):
     last_name: Mapped[str] = mapped_column(String(50))
     phone: Mapped[str] = mapped_column(String(20), unique=True, nullable=True)
     # Роль внутри компании, есть еще роль от fastapi-users, она для админки
-    role: Mapped[str] = mapped_column(
-        String(20),
-        default="member",  # member, team_admin, superuser
+    role: Mapped[UserRole] = mapped_column(
+        String(10),
+        default=UserRole.MEMBER,
         nullable=False
     )
     company_id: Mapped[int] = mapped_column(
@@ -33,7 +34,7 @@ class User(Base, IntIdPkMixin, SQLAlchemyBaseUserTable[int]):
         nullable=True  # Пользователь может быть без компании
     )
     # Связи
-    company: Mapped["Company"] = relationship(back_populates="users")
+    company: Mapped["Company"] = relationship(back_populates="users", lazy="joined")
 
     # Table args
     __table_args__ = (

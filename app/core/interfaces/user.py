@@ -3,6 +3,7 @@ from typing import Protocol
 
 from app.api.api_v1.auth.dto import UserCreate
 from app.core.database.models import User
+from app.core.database.models.enums.user_role import UserRole
 
 
 class IUserRepository(Protocol):
@@ -21,4 +22,8 @@ class IUserRepository(Protocol):
             hashed_password: str,
             company_id: int | None,
     ) -> User:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_role(self, user: User, role: UserRole) -> User:
         raise NotImplementedError

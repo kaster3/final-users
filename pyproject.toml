@@ -1,5 +1,8 @@
 [tool.poetry]
-name = "BaseFastAPI"
+name = "final-users"
+packages = [
+    {include = "app", from = "."}
+]
 version = "0.1.0"
 description = ""
 authors = ["Fedorov Semen <FedorovSemen28@yandex.ru>"]

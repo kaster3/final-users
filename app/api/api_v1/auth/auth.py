@@ -1,9 +1,8 @@
 from dishka import FromDishka
 from dishka.integrations.fastapi import inject
-from fastapi import status, APIRouter, Request, Depends
+from fastapi import status, APIRouter, Request
 
-from app.api.api_v1.auth.dto import UserRead, UserCreate, UserUpdate
-from app.core.database.models import User
+from app.api.api_v1.auth.dto import UserRead, UserCreate
 from app.core.services.user import UserService
 from app.core.settings import settings
 from app.api.api_v1.auth.dependencies.backend import authentication_backend

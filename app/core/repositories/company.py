@@ -1,7 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
-from app.api.api_v1.company.dto import CompanyCreate
+from app.api.api_v1.company.dto import CompanyCreate, CompanyUpdate
 from app.core.database.models import Company, User
 from app.core.interfaces.company import IDBCompanyRepository
 
@@ -18,7 +19,10 @@ class SQLAlchemyCompanyRepository(IDBCompanyRepository):
         return company
 
     async def get_by_id(self, company_id: int) -> Company | None:
-        company = await self.session.get(Company, company_id)
+        stmt = select(Company).where(Company.id == company_id).options(
+            selectinload(Company.users)
+        )
+        company = await self.session.scalar(stmt)
         return company
 
     async def get_by_invite_code(self, invite_code: str) -> Company | None:
@@ -26,11 +30,17 @@ class SQLAlchemyCompanyRepository(IDBCompanyRepository):
         result = await self.session.scalar(stmt)
         return result
 
+    async def update(self, company: Company, user_data: CompanyUpdate) -> Company:
+        for name, value in user_data.model_dump(exclude_unset=True).items():
+            setattr(company, name, value)
+        await self.session.commit()
+        return company
+
     async def add_user(self, company: Company, user: User) -> None:
-        pass
+        company.users.append(user)
+        await self.session.commit()
 
     async def remove_user(self, company: Company, user: User) -> None:
-        pass
+        company.users.remove(user)
+        await self.session.commit()
 
-    async def update_user_role(self, user: User, new_role: str) -> None:
-        pass

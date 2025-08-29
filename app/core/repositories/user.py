@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.api_v1.auth.dto import UserCreate
 from app.core.database.models import User
+from app.core.database.models.enums.user_role import UserRole
 from app.core.interfaces.user import IUserRepository
 
 
@@ -32,6 +33,14 @@ class SQLAlchemyUserRepository(IUserRepository):
             hashed_password=hashed_password,
         )
 
+        self.session.add(user)
+        await self.session.commit()
+        await self.session.refresh(user)
+        return user
+
+
+    async def update_role(self, user: User, role: UserRole) -> User:
+        user.role = role.value
         self.session.add(user)
         await self.session.commit()
         await self.session.refresh(user)
